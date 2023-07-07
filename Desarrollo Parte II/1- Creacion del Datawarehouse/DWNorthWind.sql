@@ -21,13 +21,14 @@ go
 	*/
 
 CREATE TABLE Dimension_Customers(
-	Customers_Id    nvarchar(5)    NOT NULL,
-	CompanyName     varchar(50)    NOT NULL,
-	ContactName     varchar(50)    NOT NULL,
-	City            varchar(50)    NOT NULL,
-	Country         varchar(50)    NOT NULL,
-	PostalCode      varchar(10)    NOT NULL,
-	CONSTRAINT PK1 PRIMARY KEY NONCLUSTERED (Customers_Id)
+	Customers_Id    int            IDENTITY(1,1),
+    Cod_Id          varchar(5)     NOT NULL,
+    CompanyName     varchar(50)    NOT NULL,
+    ContactName     varchar(50)    NOT NULL,
+    City            varchar(50)    NOT NULL,
+    Country         varchar(50)    NOT NULL,
+    PostalCode      varchar(10)    NOT NULL,
+    CONSTRAINT PK1 PRIMARY KEY NONCLUSTERED (Customers_Id)
 )
 go
 
@@ -45,11 +46,11 @@ go
 
 CREATE TABLE Dimension_Employees(
 	Employee_Id    int            IDENTITY(1,1),
-	LastName       varchar(50)    NOT NULL,
-	FirstName      varchar(50)    NOT NULL,
-	Title         varchar(50)    NOT NULL,
-	Territories    varchar(50)    NOT NULL,
-	CONSTRAINT PK2 PRIMARY KEY NONCLUSTERED (Employee_Id)
+    LastName       varchar(50)    NOT NULL,
+    FirstName      varchar(50)    NOT NULL,
+    Title          varchar(50)    NOT NULL,
+    Territories    varchar(50)    NOT NULL,
+    CONSTRAINT PK2 PRIMARY KEY NONCLUSTERED (Employee_Id)
 )
 go
 
@@ -67,11 +68,11 @@ go
 
 CREATE TABLE Dimension_Products(
 	Product_Id        int               IDENTITY(1,1),
-	ProductName       varchar(50)       NOT NULL,
-	UnitPrice         numeric(10, 2)    NOT NULL,
-	[Units in Stock]  int               NOT NULL,
-	Discontinued      bit               NOT NULL,
-	CONSTRAINT PK3 PRIMARY KEY NONCLUSTERED (Product_Id)
+    ProductName       varchar(50)       NOT NULL,
+    UnitPrice         numeric(10, 2)    NOT NULL,
+    [Units in Stock]  int               NOT NULL,
+    Discontinued      bit               NOT NULL,
+    CONSTRAINT PK3 PRIMARY KEY NONCLUSTERED (Product_Id)
 )
 go
 
@@ -88,16 +89,16 @@ go
 	*/
 
 CREATE TABLE Dimension_Tiempo(
-	FechaKey     int              IDENTITY(1,1),
-	Fecha        datetime         NOT NULL,
-	Año          smallint         NOT NULL,
-	Semestre     smallint         NOT NULL,
-	Trimestre    smallint         NOT NULL,
-	Mes          smallint         NOT NULL,
-	Semana       smallint         NOT NULL,
-	Dia          smalldatetime    NOT NULL,
-	DiaSemana    smallint         NOT NULL,
-	CONSTRAINT PK5 PRIMARY KEY NONCLUSTERED (FechaKey)
+	FechaKey     int              NOT NULL,
+    Fecha        datetime         NOT NULL,
+    Año          smallint         NOT NULL,
+    Semestre     smallint         NOT NULL,
+    Trimestre    smallint         NOT NULL,
+    Mes          smallint         NOT NULL,
+    Semana       smallint         NOT NULL,
+    Dia          smalldatetime    NOT NULL,
+    DiaSemana    smallint         NOT NULL,
+    CONSTRAINT PK5 PRIMARY KEY NONCLUSTERED (FechaKey)
 )
 go
 
@@ -114,19 +115,15 @@ go
 	*/
 
 CREATE TABLE Hechos_Sales(
-    Sales_Id        INT            IDENTITY(1,1),
-    RequiredDate    DATETIME       NOT NULL,
-    Customers_Id    NVARCHAR(5)    NOT NULL,
-    Employee_Id     INT            NOT NULL,
-    Product_Id      INT            NOT NULL,
-    FechaKey        INT            NOT NULL,
-    Quantity        NUMERIC       (10,0) NOT NULL,
+    Employee_Id     int         NOT NULL,
+    Product_Id      int         NOT NULL,
+    FechaKey        int         NOT NULL,
+    Customers_Id    int         NOT NULL,
+	Quantity        NUMERIC       (10,0) NOT NULL,
     UnitPrice       NUMERIC       (10,0) NOT NULL, 
     TotalPrice      NUMERIC       (10,0) NOT NULL
-    CONSTRAINT PK6 PRIMARY KEY NONCLUSTERED (Sales_Id)
 )
 GO
-
 
 
 IF OBJECT_ID('Hechos_Sales') IS NOT NULL
@@ -136,27 +133,26 @@ ELSE
 go
 
 /* 
-	* TABLE: Hechos_Sales 
-	*/
-
-ALTER TABLE Hechos_Sales ADD CONSTRAINT RefDimension_Customers1 
-	FOREIGN KEY (Customers_Id)
-	REFERENCES Dimension_Customers(Customers_Id)
-go
+ * TABLE: Hechos_Sales 
+ */
 
 ALTER TABLE Hechos_Sales ADD CONSTRAINT RefDimension_Employees2 
-	FOREIGN KEY (Employee_Id)
-	REFERENCES Dimension_Employees(Employee_Id)
+    FOREIGN KEY (Employee_Id)
+    REFERENCES Dimension_Employees(Employee_Id)
 go
 
 ALTER TABLE Hechos_Sales ADD CONSTRAINT RefDimension_Products3 
-	FOREIGN KEY (Product_Id)
-	REFERENCES Dimension_Products(Product_Id)
+    FOREIGN KEY (Product_Id)
+    REFERENCES Dimension_Products(Product_Id)
 go
 
 ALTER TABLE Hechos_Sales ADD CONSTRAINT RefDimension_Tiempo4 
-	FOREIGN KEY (FechaKey)
-	REFERENCES Dimension_Tiempo(FechaKey)
+    FOREIGN KEY (FechaKey)
+    REFERENCES Dimension_Tiempo(FechaKey)
 go
 
+ALTER TABLE Hechos_Sales ADD CONSTRAINT RefDimension_Customers5 
+    FOREIGN KEY (Customers_Id)
+    REFERENCES Dimension_Customers(Customers_Id)
+go
 

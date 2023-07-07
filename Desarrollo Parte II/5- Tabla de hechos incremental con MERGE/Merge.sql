@@ -21,8 +21,8 @@ THEN
                UnitPrice = Origen.TotalUnitPrice,
                TotalPrice = Origen.TotalTotalPrice
 WHEN NOT MATCHED THEN
-    INSERT (RequiredDate, Customers_Id, Employee_Id, Product_Id, FechaKey, Quantity, UnitPrice, TotalPrice)
-    VALUES (GETDATE(), Origen.Customers_Id, Origen.Employee_Id, Origen.Product_Id, Origen.FechaKey, Origen.TotalQuantity, Origen.TotalUnitPrice, Origen.TotalTotalPrice);
+    INSERT (Employee_Id, Product_Id, FechaKey,Customers_Id,Quantity, UnitPrice, TotalPrice)
+    VALUES (Origen.Customers_Id, Origen.Employee_Id, Origen.Product_Id, Origen.FechaKey, Origen.TotalQuantity, Origen.TotalUnitPrice, Origen.TotalTotalPrice);
 
 SELECT * FROM Hechos_Sales;
 
