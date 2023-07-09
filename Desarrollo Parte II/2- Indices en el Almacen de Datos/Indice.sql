@@ -12,11 +12,11 @@
  */
 
 /*Indice Customers*/
-Create Clustered Index Ix_Customers_Company ON dbo.Dimension_Customers (CompanyName)
+Create Clustered Index Ix_Customer_Company ON dbo.Dimension_Customer (CompanyName)
 GO
-Create NonClustered Index Ix_Customers_City ON dbo.Dimension_Customers (City)
+Create NonClustered Index Ix_Customer_City ON dbo.Dimension_Customer (City)
 GO
-Create NonClustered Index Ix_Customers_Country ON dbo.Dimension_Customers (Country)
+Create NonClustered Index Ix_Customer_Country ON dbo.Dimension_Customer (Country)
 GO
 
 /*Indice Employees*/
@@ -28,7 +28,7 @@ GO
 /*Indice Tiempo*/
 Create Clustered Index IX_Tiempo_FECHA ON dbo.Dimension_Tiempo(FECHA)
 GO
-Create Index  IX_Tiempo_AÑO ON dbo.Dimension_Tiempo(AÑO) WITH(FILLFACTOR=80)
+Create Index  IX_Tiempo_Año ON dbo.Dimension_Tiempo(Año) WITH(FILLFACTOR=80)
 GO
 Create Index IX_Tiempo_TRIMESTRE ON dbo.Dimension_Tiempo(TRIMESTRE) WITH(FILLFACTOR=80)
 GO
@@ -40,6 +40,6 @@ Create Clustered Index Ix_Products_ProductName ON dbo.Dimension_Products (Produc
 GO
 
 /*Indice Hechos*/
-Create ColumnStore Index Ix_Hechos_Sales_All ON dbo.Hechos_Sales(RequiredDate,Customers_Id,Employee_Id,Product_Id,FechaKey)
+Create ColumnStore Index Ix_Hechos_Sales_All ON dbo.Hechos_Sales(Cod_Id,E_Id,P_Id,FechaKey)
 GO
 

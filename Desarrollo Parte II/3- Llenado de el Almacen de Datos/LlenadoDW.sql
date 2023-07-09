@@ -31,12 +31,25 @@ EXEC SYS.SP_MSFOREACHTABLE
 				DELETE FROM ?
 			END CATCH;'
 GO
+/*Llenado de clientes*/
+Insert Into Dimension_Customer(CustomerID,CompanyName,ContactName,City,Country)
+Select
+c.CustomerID,
+c.CompanyName,
+c.ContactName,
+c.City,
+c.Country
+From Northwind.dbo.Customers c
+GO
+SELECT*FROM Dimension_Customer
 
-INSERT INTO Dimension_Employees
+/*Llenado de empleado*/
+INSERT INTO Dimension_Employees(EmployeeID,LastName,FirstName,Title,Territories)
 SELECT
-LastName,
-FirstName,
-Title,
+e.EmployeeID,
+e.LastName,
+e.FirstName,
+e.Title,
 t.TerritoryDescription
 FROM Northwind.dbo.Employees e
 INNER JOIN Northwind.dbo.EmployeeTerritories et ON et.EmployeeID = e.EmployeeID
@@ -44,19 +57,6 @@ INNER JOIN Northwind.dbo.Territories t ON t.TerritoryID = et.TerritoryID
 GO
 
 SELECT *FROM Dimension_Employees
-GO
-
-INSERT INTO Dimension_Customers(Cod_Id,CompanyName,ContactName,City,Country,PostalCode)
-Select c.CustomerID,
-c.CompanyName,
-c.ContactName,
-c.City,
-c.Country,
-c.PostalCode
-From Northwind.dbo.Customers c
-WHERE c.PostalCode IS NOT NULL
-GO
-Select*from Dimension_Customers
 GO
 
 
@@ -114,36 +114,36 @@ GO
 SELECT *FROM Dimension_Tiempo
 GO
 
-
-INSERT INTO Dimension_Products
+/*Llenado de productos*/
+INSERT INTO Dimension_Products(ProductID,ProductName,UnitPrice,[Units in Stock],Discontinued)
 SELECT
+p.ProductID,
 p.ProductName,
 p.UnitPrice,
 p.UnitsInStock,
 p.Discontinued
 FROM Northwind.dbo.Products p
 GO
-
 SELECT *FROM Dimension_Products
 
-INSERT INTO Hechos_Sales (Employee_Id, Product_Id, FechaKey, Customers_Id, Quantity, UnitPrice, TotalPrice)
+/*Llenado de hechos*/
+INSERT INTO Hechos_Sales ( Cod_Id,E_Id,P_Id, FechaKey, cod_Id, Quantity, UnitPrice, TotalPrice)
 SELECT
-    DE.Employee_Id,
-    P.ProductID,
-    DT.FechaKey,
-    DC.Customers_Id,
-    OD.Quantity,
-    P.UnitPrice,
-    OD.Quantity * P.UnitPrice AS TotalPrice
+   DC.Cod_Id,
+   DE.E_Id,
+   P.ProductID,
+   DT.FechaKeY,
+   OD.Quantity,
+   P.UnitPrice,
+   OD.Quantity * P.UnitPrice AS TotalPrice
 FROM Northwind.dbo.Orders o
 INNER JOIN Northwind.dbo.[Order Details] OD ON o.OrderID = OD.OrderID
 INNER JOIN Northwind.dbo.Products P ON OD.ProductID = P.ProductID
-INNER JOIN Dimension_Employees DE ON o.EmployeeID = DE.Employee_Id
+INNER JOIN Dimension_Employees DE ON o.EmployeeID = DE.EmployeeID
 INNER JOIN Dimension_Tiempo DT ON DT.Fecha = o.RequiredDate
-INNER JOIN Dimension_Customers DC ON o.CustomerID = DC.Cod_Id
+INNER JOIN Dimension_Customer DC ON o.CustomerID = DC.CustomerID
 GO
 SELECT *FROM Hechos_Sales
-
 
 /*OJO Ejecute despues de llenar el DW*/
 EXEC SYS.SP_MSFOREACHTABLE 'ALTER TABLE ? CHECK CONSTRAINT ALL'

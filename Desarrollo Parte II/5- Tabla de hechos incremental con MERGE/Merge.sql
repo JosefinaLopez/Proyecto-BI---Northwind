@@ -1,15 +1,15 @@
 MERGE INTO Hechos_Sales AS Destino
 USING (
-    SELECT Customers_Id, Employee_Id, Product_Id, FechaKey, 
+    SELECT cod_Id,E_ID, P_ID, FechaKey, 
            SUM(Quantity) AS TotalQuantity, 
            SUM(UnitPrice) AS TotalUnitPrice, 
            SUM(TotalPrice) AS TotalTotalPrice
     FROM Hechos_Sales
-    GROUP BY Customers_Id, Employee_Id, Product_Id, FechaKey
+    GROUP BY cod_Id, E_ID, P_ID, FechaKey
 ) AS Origen
-ON Destino.Customers_Id = Origen.Customers_Id
-   AND Destino.Employee_Id = Origen.Employee_Id
-   AND Destino.Product_Id = Origen.Product_Id
+ON Destino.cod_Id = Origen.cod_Id
+   AND Destino.E_ID = Origen.E_ID
+   AND Destino.P_ID = Origen.P_ID
    AND Destino.FechaKey = Origen.FechaKey
 WHEN MATCHED AND (
     Destino.Quantity <> Origen.TotalQuantity
@@ -21,9 +21,7 @@ THEN
                UnitPrice = Origen.TotalUnitPrice,
                TotalPrice = Origen.TotalTotalPrice
 WHEN NOT MATCHED THEN
-    INSERT (Employee_Id, Product_Id, FechaKey,Customers_Id,Quantity, UnitPrice, TotalPrice)
-    VALUES (Origen.Customers_Id, Origen.Employee_Id, Origen.Product_Id, Origen.FechaKey, Origen.TotalQuantity, Origen.TotalUnitPrice, Origen.TotalTotalPrice);
+    INSERT (cod_Id,E_ID, P_ID, FechaKey,Quantity, UnitPrice, TotalPrice)
+    VALUES (Origen.cod_Id, Origen.E_ID, Origen.P_ID, Origen.FechaKey, Origen.TotalQuantity, Origen.TotalUnitPrice, Origen.TotalTotalPrice);
 
 SELECT * FROM Hechos_Sales;
-
-

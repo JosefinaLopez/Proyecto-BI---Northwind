@@ -10,23 +10,33 @@
  *                            Facultad de Ciencias e Ingenieria 
  *                            Estudiantes de Ingenieria de Sistemas
  */
-USE master
-go
+ USE master
+GO
+IF DB_ID('DWNorthwind') IS NOT NULL
+BEGIN
+     ALTER DATABASE  DWNorthwind SET SINGLE_USER WITH ROLLBACK IMMEDIATE
+  DROP DATABASE DWNorthwind
+END
+GO
 CREATE DATABASE DWNorthwind
-go
+GO
 USE DWNorthwind
-go
+GO
 /* 
- * TABLE: Dimension_Customer 
+ * TABLE: Dimension_Customers 
  */
 
+
+
 CREATE TABLE Dimension_Customer(
-    Cod_Id         int             IDENTITY(1,1),
+     Cod_Id         int             IDENTITY(1,1),
     CustomerID     nchar(10)       NOT NULL,
     CompanyName    nvarchar(50)    NOT NULL,
-    ContactName    nvarchar(50)    NOT NULL,
-    City           nvarchar(50)    NOT NULL,
-    Country        nvarchar(50)    NOT NULL,
+    ContactName    nvarchar(50)    NULL,
+    City           nvarchar(50)    NULL,
+    Country        nvarchar(50)    NULL,
+	Fecha_Inicial Datetime NOT NULL,
+    Fecha_Final Datetime NOT NULL
     CONSTRAINT PK1 PRIMARY KEY NONCLUSTERED (Cod_Id)
 )
 go
@@ -50,7 +60,9 @@ CREATE TABLE Dimension_Employees(
     FirstName      nvarchar(50)    NOT NULL,
     Title          nvarchar(50)    NOT NULL,
     Territories    nvarchar(50)    NOT NULL,
-    CONSTRAINT PK2 PRIMARY KEY NONCLUSTERED (E_Id)
+	Fecha_Inicial Datetime NOT NULL,
+    Fecha_Final Datetime NOT NULL
+     CONSTRAINT PK2 PRIMARY KEY NONCLUSTERED (E_Id)
 )
 go
 
@@ -67,14 +79,17 @@ go
  */
 
 CREATE TABLE Dimension_Products(
-    P_Id              int             IDENTITY(1,1),
+   P_Id              int             IDENTITY(1,1),
     ProductID         int             NOT NULL,
     ProductName       nvarchar(50)    NOT NULL,
     UnitPrice         money           NOT NULL,
     [Units in Stock]  smallint        NOT NULL,
     Discontinued      bit             NOT NULL,
+	Fecha_Inicial Datetime NOT NULL,
+    Fecha_Final Datetime NOT NULL
     CONSTRAINT PK3 PRIMARY KEY NONCLUSTERED (P_Id)
 )
+
 go
 
 
@@ -90,9 +105,9 @@ go
  */
 
 CREATE TABLE Dimension_Tiempo(
-    FechaKey     int         NOT NULL,
+   FechaKey     int         NOT NULL,
     Fecha        datetime    NOT NULL,
-    Año         smallint    NOT NULL,
+    Año          smallint    NOT NULL,
     Semestre     smallint    NOT NULL,
     Trimestre    smallint    NOT NULL,
     Mes          smallint    NOT NULL,
@@ -129,9 +144,9 @@ go
 
 
 IF OBJECT_ID('Hechos_Sales') IS NOT NULL
-    PRINT '<<< CREATED TABLE Hechos_Sales >>>'
+	PRINT '<<< CREATED TABLE Hechos_Sales >>>'
 ELSE
-    PRINT '<<< FAILED CREATING TABLE Hechos_Sales >>>'
+	PRINT '<<< FAILED CREATING TABLE Hechos_Sales >>>'
 go
 
 /* 
@@ -158,4 +173,7 @@ ALTER TABLE Hechos_Sales ADD CONSTRAINT RefDimension_Tiempo4
     REFERENCES Dimension_Tiempo(FechaKey)
 go
 
+
+
+go
 
