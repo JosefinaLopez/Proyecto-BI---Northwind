@@ -55,7 +55,6 @@ FROM Northwind.dbo.Employees e
 INNER JOIN Northwind.dbo.EmployeeTerritories et ON et.EmployeeID = e.EmployeeID
 INNER JOIN Northwind.dbo.Territories t ON t.TerritoryID = et.TerritoryID
 GO
-
 SELECT *FROM Dimension_Employees
 GO
 
@@ -127,7 +126,7 @@ GO
 SELECT *FROM Dimension_Products
 
 /*Llenado de hechos*/
-INSERT INTO Hechos_Sales ( Cod_Id,E_Id,P_Id, FechaKey, cod_Id, Quantity, UnitPrice, TotalPrice)
+INSERT INTO Hechos_Sales ( Cod_Id,E_Id,P_Id, FechaKey, Quantity, UnitPrice, TotalPrice)
 SELECT
    DC.Cod_Id,
    DE.E_Id,
